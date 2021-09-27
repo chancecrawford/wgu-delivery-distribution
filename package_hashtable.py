@@ -8,11 +8,14 @@ class PackageHashTable:
     # O(1)
     def __init__(self):
         self.size = 40
-        self.map = [None] * self.size
+        self.map = [None] * self.size  # maybe change to [] ?
+
+    def __setitem__(self, key, value):
+        self.map[key] = value
 
     def get_hash(self, key):
         key_hash = key % self.size
-        print(key_hash)
+        print('...MADE KEY HASH...', key_hash)
         return key_hash
 
     # return list of results by value
@@ -33,16 +36,15 @@ class PackageHashTable:
             return None
 
     # return package with matching key/id
-    # O(N)
+    # should we just use __getitem__ ?
+    # O(1)
     def search_by_key(self, key_input):
         # convert id to hash
         key = self.get_hash(int(key_input))
-        print('search key', key)
-        # search for hash in each package
+        # gets entry that matches key
         if self.map[key] is not None:
-            for package in self.map[key]:
-                if package[0] == key:
-                    return package[1]
+            print('---PACKAGE---', )
+            return self.map[key]
         return None
 
     # insert package into hash table
@@ -53,14 +55,14 @@ class PackageHashTable:
 
         if self.map[hash_key] is None:
             self.map[hash_key] = list(values)
-            return True
         else:
-            for entry in self.map[hash_key]:
-                if entry[0] == key:
-                    entry[1] == package
-                    return True
-            self.map[hash_key].append(package)
-            return True
+            # replaces values for existing packages
+            if self.map[hash_key] is not None:
+                # TODO: test if this works
+                self.__setitem__(hash_key, values)
+                return True
+            # adds package if no empty slots or existing match
+            self.map[hash_key].append(values)
 
 
 # gets package data from .csv and inserts into hash table

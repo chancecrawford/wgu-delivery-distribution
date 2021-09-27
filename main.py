@@ -34,7 +34,7 @@ def user_interface():
         status = input("Please enter the delivery status. (at hub, delivered, en route \n")
 
         new_package = [package_id, address, city, state, zip_code, deadline, weight, status]
-        packages.insert_package(new_package)
+        packages.insert_package(new_package[0], new_package)
 
         print('Package #', package_id, ' inserted successfully!')
 
@@ -46,14 +46,18 @@ def user_interface():
                               "[2] Delivery attribute \n")
         # have user choose how to search for a package/delivery
         if search_choice == "1":
+            # TODO: make sure only numbers can be input
             search_id = input("Enter package id... \n")
             search_results = packages.search_by_key(search_id)
         if search_choice == "2":
             search_value = input("Enter value to search for packages with. \n")
             search_results = packages.search_by_value(search_value)
+
         # print results matching search if any
         if search_results is not None:
+            print(len(search_results), ' packages found. \n')
             for result in search_results:
+                # prints key and values separately ?
                 print(result)
         else:
             print("No packages found.")
