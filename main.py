@@ -2,6 +2,7 @@ import sys
 import time
 
 from package_hashtable import packages
+from utils import verify_number_input
 
 
 # ui for searching, creating package deliveries
@@ -33,10 +34,11 @@ def user_interface():
         weight = input("Please enter the package weight. (in kilos) \n")
         status = input("Please enter the delivery status. (at hub, delivered, en route \n")
 
-        new_package = [package_id, address, city, state, zip_code, deadline, weight, status]
-        packages.insert_package(new_package[0], new_package)
-
-        print('Package #', package_id, ' inserted successfully!')
+        # verify id is an int
+        if verify_number_input(package_id):
+            new_package = [package_id, address, city, state, zip_code, deadline, weight, status]
+            packages.insert_package(new_package[0], new_package)
+            print('Package #', package_id, ' inserted successfully!')
 
     # search deliveries
     if options == "2":
@@ -44,35 +46,34 @@ def user_interface():
         search_choice = input("Search by package id or by delivery attribute? \n \n"
                               "[1] Package ID \n"
                               "[2] Delivery attribute \n")
-        # have user choose how to search for a package/delivery
+
+        # search by package id
         if search_choice == "1":
-            # TODO: make sure only numbers can be input
             search_id = input("Enter package id... \n")
-            search_results = packages.search_by_key(search_id)
+            # verify id is an int
+            if verify_number_input(search_id):
+                search_results = [packages.search_by_key(search_id)]
+
+        # search by value in packages
         if search_choice == "2":
             search_value = input("Enter value to search for packages with. \n")
             search_results = packages.search_by_value(search_value)
 
+        # filter out None entries if id entered would try to grab something out of bounds of list
+        filtered_search = [result for result in search_results if result is not None]
         # print results matching search if any
-        if search_results is not None:
-            print(len(search_results), ' packages found. \n')
-            for result in search_results:
-                # prints key and values separately ?
-                print(result)
+        if filtered_search:
+            for result in filtered_search:
+                print('---RESULT---', result)
         else:
             print("No packages found.")
 
+    # show all packages/deliveries
     if options == "3":
         for entry in packages.map:
             if entry is not None:
                 print(entry)
 
-
-# How to do the delivery creation?
-# step-by-step enter fields, insert into hashmap
-
-# How to do the lookup?
-# ask for numbered input tied to which field to search by, get user input, search deliveries with that input
 
 print("Welcome to the WGUPS DLD scheduling system! \n")
 user_interface()
