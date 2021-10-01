@@ -1,6 +1,7 @@
 import sys
 import time
 
+from distances import graph
 from package_hashtable import packages
 from utils import verify_number_input
 
@@ -11,7 +12,8 @@ def user_interface():
     options = input("Enter number for desired action. \n \n"
                     "[1] Create package to deliver \n"
                     "[2] Lookup delivery status \n"
-                    "[3] See all packages \n \n"
+                    "[3] See all packages \n"
+                    "[4] See distance graph \n \n"
                     "[0] Exit program \n"
                     )
 
@@ -73,6 +75,10 @@ def user_interface():
         for entry in packages.map:
             if entry is not None:
                 print(entry)
+    # show distance graph (only for testing/debugging)
+    if options == "4":
+        for entry in graph.edges:
+            print(entry)
 
 
 print("Welcome to the WGUPS DLD scheduling system! \n")

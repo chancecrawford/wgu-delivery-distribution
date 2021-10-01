@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Almost fixed hash map, why do we have to do it this way again?">
-      <change afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
+    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Fixed hashmap and searches for key or values in it, created utils for checks and validations">
+      <change afterPath="$PROJECT_DIR$/dijsktra_algorithm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/distances.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/truck.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WGUPS Distance Table.csv" beforeDir="false" afterPath="$PROJECT_DIR$/WGUPS Distance Table.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package_hashtable.py" beforeDir="false" afterPath="$PROJECT_DIR$/package_hashtable.py" afterDir="false" />
     </list>
@@ -120,7 +123,14 @@
       <option name="project" value="LOCAL" />
       <updated>1632784899907</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Fixed hashmap and searches for key or values in it, created utils for checks and validations">
+      <created>1632862427166</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1632862427166</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -147,6 +157,7 @@
     <MESSAGE value="Fix some project files/settings, create basic ui" />
     <MESSAGE value="Attempting to fix hash map, not fun" />
     <MESSAGE value="Almost fixed hash map, why do we have to do it this way again?" />
-    <option name="LAST_COMMIT_MESSAGE" value="Almost fixed hash map, why do we have to do it this way again?" />
+    <MESSAGE value="Fixed hashmap and searches for key or values in it, created utils for checks and validations" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed hashmap and searches for key or values in it, created utils for checks and validations" />
   </component>
 </project>

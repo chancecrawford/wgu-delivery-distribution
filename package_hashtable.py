@@ -48,7 +48,7 @@ class PackageHashTable:
     def insert_package(self, key, package):
         hash_key = self.get_hash(int(package[0]))
         values = [key, package]
-
+        # if row empty, insert values
         if self.map[hash_key] is None:
             self.map[hash_key] = list(values)
         else:
