@@ -1,8 +1,9 @@
 import sys
 import time
 
-from distances import graph
-from package_hashtable import packages
+from truck import truck1, truck2, truck3
+from distances import distance_graph
+from package_hashtable import packages_hash
 from utils import verify_number_input
 
 
@@ -13,7 +14,7 @@ def user_interface():
                     "[1] Create package to deliver \n"
                     "[2] Lookup delivery status \n"
                     "[3] See all packages \n"
-                    "[4] See distance graph \n \n"
+                    "[4] Test \n \n"
                     "[0] Exit program \n"
                     )
 
@@ -39,7 +40,7 @@ def user_interface():
         # verify id is an int
         if verify_number_input(package_id):
             new_package = [package_id, address, city, state, zip_code, deadline, weight, status]
-            packages.insert_package(new_package[0], new_package)
+            packages_hash.insert_package(new_package[0], new_package)
             print('Package #', package_id, ' inserted successfully!')
 
     # search deliveries
@@ -54,12 +55,12 @@ def user_interface():
             search_id = input("Enter package id... \n")
             # verify id is an int
             if verify_number_input(search_id):
-                search_results = [packages.search_by_key(search_id)]
+                search_results = [packages_hash.search_by_key(search_id)]
 
         # search by value in packages
         if search_choice == "2":
             search_value = input("Enter value to search for packages with. \n")
-            search_results = packages.search_by_value(search_value)
+            search_results = packages_hash.search_by_value(search_value)
 
         # filter out None entries if id entered would try to grab something out of bounds of list
         filtered_search = [result for result in search_results if result is not None]
@@ -72,13 +73,22 @@ def user_interface():
 
     # show all packages/deliveries
     if options == "3":
-        for entry in packages.map:
+        for entry in packages_hash.map:
             if entry is not None:
                 print(entry)
     # show distance graph (only for testing/debugging)
     if options == "4":
-        for entry in graph.edges:
-            print(entry)
+        print('Truck1 Packages #: ', len(truck1.packages))
+        print('Truck2 Packages #: ', len(truck2.packages))
+        print('Truck3 Packages #: ', len(truck3.packages), "\n")
+
+        print('Truck1 \n', *truck1.packages, sep="\n")
+        print('Truck2: ', *truck2.packages, sep="\n")
+        print('Truck3: ', *truck3.packages, sep="\n")
+
+        print('Truck1 Route: ', *truck1.truck_route, sep="\n")
+        print('Truck2 Route: ', *truck2.truck_route, sep="\n")
+        print('Truck3 Route: ', *truck3.truck_route, sep="\n")
 
 
 print("Welcome to the WGUPS DLD scheduling system! \n")

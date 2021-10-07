@@ -8,11 +8,10 @@ class PackageHashTable:
     # O(1)
     def __init__(self):
         self.size = 40
-        self.map = [None] * self.size  # maybe change to [] ?
+        self.map = [None] * self.size
 
     def get_hash(self, key):
         key_hash = key % self.size
-        # print('...MADE KEY HASH...', key_hash)
         return key_hash
 
     # return list of results by value
@@ -76,4 +75,4 @@ def retrieve_packages(package_file):
 
 
 # Initialize hash table with package .csv
-packages = retrieve_packages("WGUPS Package File.csv")
+packages_hash = retrieve_packages("data/WGUPS Package File.csv")

@@ -2,7 +2,7 @@ from distances import DistanceGraph
 
 # need a priority queue ?
 
-# pseudocode from course material for alorithm
+# pseudocode from course material for algorithm
 # def DijkstraShortestPath(startV):
 #
 #     for vertex currentV in graph:
