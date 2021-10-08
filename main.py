@@ -82,13 +82,13 @@ def user_interface():
         print('Truck2 Packages #: ', len(truck2.packages))
         print('Truck3 Packages #: ', len(truck3.packages), "\n")
 
-        print('Truck1 \n', *truck1.packages, sep="\n")
-        print('Truck2: ', *truck2.packages, sep="\n")
-        print('Truck3: ', *truck3.packages, sep="\n")
+        print('TRUCK 1:', *truck1.packages, sep="\n")
+        print('TRUCK 2:', *truck2.packages, sep="\n")
+        print('TRUCK 3:', *truck3.packages, sep="\n")
 
-        print('Truck1 Route: ', *truck1.truck_route, sep="\n")
-        print('Truck2 Route: ', *truck2.truck_route, sep="\n")
-        print('Truck3 Route: ', *truck3.truck_route, sep="\n")
+        print('___Truck1 Route___', *truck1.truck_route, sep="\n")
+        print('___Truck2 Route___', *truck2.truck_route, sep="\n")
+        print('___Truck3 Route___', *truck3.truck_route, sep="\n")
 
 
 print("Welcome to the WGUPS DLD scheduling system! \n")

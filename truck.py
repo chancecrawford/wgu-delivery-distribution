@@ -50,16 +50,14 @@ class Truck:
 # allocate packages based on priority and special instructions
 # O(N^2)
 def allocate_packages():
+    # add home hub to beginning of all truck routes
+    truck1.truck_route.append("4001 South 700 East")
+    truck2.truck_route.append("4001 South 700 East")
+    truck3.truck_route.append("4001 South 700 East")
     # need to separate all packages by address
-    # packages_by_address = {addresses[i][2]: [] for i in range(0, len(addresses))}
-    # add packages to matching addresses in dict
-    # distance_graph.get_packages_for_delivery(packages_hash.map)
-
     delivery_addresses = []
+    # add packages to matching addresses in dict
     deliveries = defaultdict(list)
-
-    # for package in packages_hash.map:
-    #     print('Addr: ', package[1][1])
 
     for package in packages_hash.map:
         deliveries[package[1][1]].append(package[1])
@@ -67,73 +65,70 @@ def allocate_packages():
     for address in deliveries:
         delivery_addresses.append(address)
 
-    print('deliveries ', deliveries)
-    for entry in deliveries.items():
-        print(entry)
+    # 3 trucks, 2 drivers, don't worry about gas, no time taken to deliver or switch trucks
+    # one of trucks have to return base hub to switch trucks -- can't carry all in 2
+    # have to figure out how to deal with packages not arriving to hub until 9:05
+    # # manually insert home hub for truck to go back to
+    # trucks avg speed = 18mph
+    regular_packages = []
 
+    # prioritize packages that have specific deadlines or instructions first
     for address in delivery_addresses:
         for package in deliveries[address]:
             if package is not None:
                 if package[5] == "9:00":
                     truck1.add_package(package)
-                if package[5] == "9:05" or package[7] == "Delayed---9:05":
+                elif package[5] == "9:05" or (package[5] != "EOD" and package[7] == "Delayed---9:05"):
                     truck2.add_package(package)
-                if package[5] == "10:30" and "Must be delivered with" in package[7]:
+                elif package[5] == "EOD" and package[7] == "Delayed---9:05":
+                    truck3.add_package(package)
+                elif package[5] == "10:30" and "Must be delivered with" in package[7]:
                     truck1.add_package(package)
-                if package[7] == "Can only be on truck 2":
+                elif package[7] == "Can only be on truck 2":
                     truck2.add_package(package)
                     # packages that have this deadline but no special instructions
-                if package[5] == "10:30" and package[7] == "":
+                elif package[5] == "10:30" and package[7] == "":
                     truck1.add_package(package)
                     # add rest of packages not to exceed 16 on each truck
-                if package[5] == "EOD" and package[7] == "":
-                    if len(truck1.packages) < 16:
-                        truck1.add_package(package)
-                    elif len(truck2.packages) < 16:
-                        truck2.add_package(package)
-                    elif len(truck3.packages) < 16:
-                        truck3.add_package(package)
+                else:
+                    regular_packages.append(package)
 
-    # # O(n) + O(1) so == O(n)
-    # for entry in packages_hash.map:
-    #     packages_by_address[entry[1][1]].append(entry[1])
-    #
-    # for key, value in packages_by_address.items():
-    #     print(key, ' : ', value)
-    #
-    # # allocate packages based on priority and stipulations
-    # # O(N^2)
-    # for packages in packages_by_address.items():
-    #     for individual_package in packages:
-    #         if len(individual_package) > 0:
-    #             # earliest deadline packages first
-    #             print(individual_package)
-    #             if individual_package[5] == "9:00":
-    #                 truck1.add_package(individual_package)
-    #             # next earliest deadline
-    #             elif individual_package[5] == "9:05" or individual_package[7] == "Delayed---9:05":
-    #                 truck2.add_package(packages)
-    #             # next deadline time and stipulation to be delivered together
-    #             elif individual_package[5] == "10:30" and "Must be delivered with" in individual_package[7]:
-    #                 truck1.add_package(packages)
-    #             # packages that have to go on truck 2
-    #             elif individual_package[7] == "Can only be on truck 2":
-    #                 truck2.add_package(packages)
-    #             # packages that have this deadline but no special instructions
-    #             elif individual_package[5] == "10:30" and individual_package[7] == "":
-    #                 truck1.add_package(individual_package)
-    #             # add rest of packages not to exceed 16 on each truck
-    #             elif individual_package[5] == "EOD" and individual_package[7] == "":
-    #                 if len(truck1.packages) < 16:
-    #                     truck1.add_package(individual_package)
-    #                 elif len(truck2.packages) < 16:
-    #                     truck2.add_package(individual_package)
-    #                 elif len(truck3.packages) < 16:
-    #                     truck3.add_package(individual_package)
+    # separate loop to then allocate remaining packages that have no specific deadline or instructions
+    for package in regular_packages:
+        # if package[5] == "EOD" and package[7] == "":
+        if len(truck1.packages) < 16:
+            truck1.add_package(package)
+        elif len(truck2.packages) < 16:
+            truck2.add_package(package)
+        elif len(truck3.packages) < 16:
+            truck3.add_package(package)
+        else:
+            print("Package " + package[0] + " could not be allocated.")
 
 
-def get_best_route():
-    print("best route")
+def get_best_route(original_route):
+    # for edge in distance_graph.edges.items():
+    #     print(edge)
+
+    # loop thru orig route
+    # use dijk algorithm to find shortest route
+    # save route to new list, then set truck_route to new list
+    optimized_route = [{original_route[0]: 0}]
+    index = 0
+
+    print(len(original_route))
+
+    for address in original_route:
+        if original_route.index(address) < len(original_route):
+            optimized_route.append(distance_graph.dijkstra(address, original_route[original_route.index(address) + 1]))
+            print(optimized_route, sep=", ")
+        else:
+            optimized_route.append(distance_graph.dijkstra(address, original_route[0]))
+
+    # optimized_route.append(distance_graph.dijkstra(original_route[0], None))
+
+    for trip in optimized_route:
+        print(trip)
 
 
 truck1 = Truck()
@@ -144,5 +139,6 @@ truck3 = Truck()
 allocate_packages()
 # determine routes for trucks based on algorithm
 # get_best_route()
+truck1.truck_route = get_best_route(truck1.truck_route)
 
 # truck1.build_delivery_list()
