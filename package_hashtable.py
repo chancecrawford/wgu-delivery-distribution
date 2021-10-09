@@ -7,7 +7,7 @@ class PackageHashTable:
     # create default hash map with default 40 empty entries
     # O(1)
     def __init__(self):
-        self.size = 40
+        self.size = 100
         self.map = [None] * self.size
 
     def get_hash(self, key):

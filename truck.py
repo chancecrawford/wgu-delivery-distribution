@@ -2,7 +2,7 @@ from distances import distance_graph
 from package_hashtable import packages_hash
 
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 # Class for truck object that handles delivery of packages using hash map
@@ -17,7 +17,8 @@ class Truck:
         # lists for tracking truck packages and route order
         self.packages = []
         self.truck_route = []
-        # where the hell do I put a trucks speed??
+        # average truck speed
+        self.avg_speed = 18
 
     def start_route(self, timestamp):
         self.route_start_time = timestamp
@@ -40,11 +41,11 @@ class Truck:
         # remove address from route (could we also just have vertex here?)
         self.truck_route.remove(package[1])
 
+    # I don't think we need this anymore??
     # need a way to build delivery list consisting of packages and most efficient routes
-    def build_delivery_list(self, packages_to_deliver, best_route):
-        self.packages = packages_to_deliver
-        self.truck_route = best_route
-        # build dict with truck details, route, and packages
+    # def build_delivery_list(self, packages_to_deliver, best_route):
+    #     self.packages = packages_to_deliver
+    #     self.truck_route = best_route
 
 
 # allocate packages based on priority and special instructions
@@ -58,10 +59,11 @@ def allocate_packages():
     delivery_addresses = []
     # add packages to matching addresses in dict
     deliveries = defaultdict(list)
-
+    # add packages in temp deliveries dict
     for package in packages_hash.map:
-        deliveries[package[1][1]].append(package[1])
-
+        if package is not None:
+            deliveries[package[1][1]].append(package[1])
+    # get addresses for temp address list
     for address in deliveries:
         delivery_addresses.append(address)
 
@@ -83,6 +85,8 @@ def allocate_packages():
                 elif package[5] == "EOD" and package[7] == "Delayed---9:05":
                     truck3.add_package(package)
                 elif package[5] == "10:30" and "Must be delivered with" in package[7]:
+                    truck1.add_package(package)
+                elif package[0] == "19":
                     truck1.add_package(package)
                 elif package[7] == "Can only be on truck 2":
                     truck2.add_package(package)
@@ -106,31 +110,72 @@ def allocate_packages():
             print("Package " + package[0] + " could not be allocated.")
 
 
+# O(N)
+# TODO: need to adjust for truck 2 returning to hub to pick up late arrival packages
 def get_best_route(original_route):
-    # for edge in distance_graph.edges.items():
-    #     print(edge)
-
-    # loop thru orig route
-    # use dijk algorithm to find shortest route
-    # save route to new list, then set truck_route to new list
-    optimized_route = [{original_route[0]: 0}]
-    index = 0
-
-    print(len(original_route))
-
+    # create blank list for storing optimized paths in route
+    optimized_route = []
+    # index for tracking when to add home hub at end of route
+    # start at one to account for home hub already being in list
+    index = 1
+    # loop through addresses in route and get shortest distance routes/miles between each stop
     for address in original_route:
-        if original_route.index(address) < len(original_route):
+        # index check if stop is last stop or not
+        if index < len(original_route):
             optimized_route.append(distance_graph.dijkstra(address, original_route[original_route.index(address) + 1]))
-            print(optimized_route, sep=", ")
-        else:
+            index += 1
+        # if it is last stop, add home hub and shortest route to it
+        elif index == len(original_route):
             optimized_route.append(distance_graph.dijkstra(address, original_route[0]))
-
-    # optimized_route.append(distance_graph.dijkstra(original_route[0], None))
-
-    for trip in optimized_route:
-        print(trip)
+    # return optimized route for given truck
+    return optimized_route
 
 
+def start_deliveries():
+    # need to set start time for truck 1/2 at 8am
+    truck1.start_route(datetime.today().replace(hour=8, minute=0))
+    truck2.start_route(datetime.today().replace(hour=8, minute=0))
+    # set current time to start time for adding travel times for each stop
+    truck1.route_current_time = truck1.route_start_time
+    truck2.route_current_time = truck2.route_start_time
+    # loop through truck routes and compute time taken to reach each hub
+    # first truck route
+    for truck1_delivery_stop in truck1.truck_route:
+        # get decimal value of time to travel to stop
+        time_to_deliver = float(truck1_delivery_stop[1]) / truck1.avg_speed
+        # convert decimal to seconds to add to datetime
+        time_to_deliver = round(time_to_deliver * 60 * 60, 2)
+        print(truck1_delivery_stop[0] + ": " + str(time_to_deliver))
+        # add time elapsed to current time
+        truck1.route_current_time += timedelta(seconds=time_to_deliver)
+        # update delivery statuses for packages delivered at this stop
+        for package in truck1.packages:
+            if truck1_delivery_stop[0] == package[1]:
+                package[8] = "DELIVERED"
+                print("Package changed: ", package)
+    # update time that truck finishes route
+    truck1.finish_route(truck1.route_current_time)
+    print("Truck1 Finish Time: ", str(truck1.route_finish_time))
+    # second truck route
+    for truck2_delivery_stop in truck2.truck_route:
+        # get decimal value of time to travel to stop
+        time_to_deliver = float(truck2_delivery_stop[1]) / truck2.avg_speed
+        # convert decimal to seconds to add to datetime
+        time_to_deliver = round(time_to_deliver * 60 * 60, 2)
+        print(truck2_delivery_stop[0] + ": " + str(time_to_deliver))
+        # add time elapsed to current time
+        truck2.route_current_time += timedelta(seconds=time_to_deliver)
+        # update delivery statuses for packages delivered at this stop
+        for package in truck2.packages:
+            if truck2_delivery_stop[0] == package[1]:
+                package[8] = "DELIVERED"
+                print("Package changed: ", package)
+    # update time that truck finishes route
+    truck2.finish_route(truck2.route_current_time)
+    print("Truck2 Finish Time: ", str(truck2.route_finish_time))
+
+
+# initialize each truck object
 truck1 = Truck()
 truck2 = Truck()
 truck3 = Truck()
@@ -138,7 +183,6 @@ truck3 = Truck()
 # sort packages and allocate to trucks, need distance file for addresses
 allocate_packages()
 # determine routes for trucks based on algorithm
-# get_best_route()
 truck1.truck_route = get_best_route(truck1.truck_route)
-
-# truck1.build_delivery_list()
+truck2.truck_route = get_best_route(truck2.truck_route)
+truck3.truck_route = get_best_route(truck3.truck_route)

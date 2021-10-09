@@ -1,6 +1,5 @@
 import csv
 
-from collections import defaultdict
 from queue import PriorityQueue
 
 
@@ -9,26 +8,24 @@ from queue import PriorityQueue
 class DistanceGraph:
     # graph attributes
     def __init__(self):
-        # self.number_of_hubs = number_of_hubs
         self.vertices = []
-        # self.edges = [[-1 for i in range(number_of_hubs)] for j in range(number_of_hubs)]
         self.edges = {}
         self.visited = []
-        # self.deliveries = defaultdict(list)
 
     # need both vertices that form edge and distance between them
     def add_edge(self, first_vertex, second_vertex, distance_between):
+        # initialize entries in dict before adding elements there
         if first_vertex not in self.edges:
             self.edges[first_vertex] = {}
         if second_vertex not in self.edges:
             self.edges[second_vertex] = {}
-
+        # create edge pairs and distances for given addresses
         self.edges[first_vertex][second_vertex] = distance_between
         self.edges[second_vertex][first_vertex] = distance_between
 
-        # self.edges[(first_vertex, second_vertex)] = distance_between
-        # self.edges[(second_vertex, first_vertex)] = distance_between
-
+    # takes two points, finds shortest path to all points from current one,
+    # and returns shortest path distance for next vertex
+    # O(ElogV) where E = # of edges and V = number of vertices
     def dijkstra(self, start_vertex, next_vertex):
         # create dictionary with address as key and infinite as initial distance from start vertex to that address
         d = {v: float('inf') for v in self.vertices}
@@ -55,13 +52,8 @@ class DistanceGraph:
                         if new_cost < old_cost:
                             priority_queue.put((new_cost, neighbor))
                             d[neighbor] = new_cost
-        # check if this stop was the last one before return to home hub
         if next_vertex is not None:
-            # if not, return next stop/distance
-            return {next_vertex: d[next_vertex]}
-        else:
-            # if last stop, return home/distance to home hub
-            return {start_vertex: d[start_vertex]}
+            return next_vertex, d[next_vertex]
 
 
 # gets distance data from .csv

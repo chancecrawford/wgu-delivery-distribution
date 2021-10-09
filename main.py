@@ -1,10 +1,11 @@
 import sys
 import time
 
+import truck
 from truck import truck1, truck2, truck3
 from distances import distance_graph
 from package_hashtable import packages_hash
-from utils import verify_number_input
+from utils import verify_package_id_input
 
 
 # ui for searching, creating package deliveries
@@ -12,9 +13,10 @@ def user_interface():
     # user options: search deliveries, enter new delivery
     options = input("Enter number for desired action. \n \n"
                     "[1] Create package to deliver \n"
-                    "[2] Lookup delivery status \n"
+                    "[2] Lookup package \n"
                     "[3] See all packages \n"
-                    "[4] Test \n \n"
+                    "[4] See package status at specific time \n"
+                    "[5] Test truck package allocation and routes \n \n"
                     "[0] Exit program \n"
                     )
 
@@ -22,13 +24,13 @@ def user_interface():
     # exit program
     if options == "0":
         print("Thank you for using the WGUPS DLD scheduling system! \n \n"
-              "Termination application...")
+              "Terminating application...")
         time.sleep(2)
         sys.exit()
     # create package delivery
     if options == "1":
         # get all inputs needed for inserting new package into hashtable/csv
-        package_id = input("Please enter the package id. (must be unique) \n")
+        package_id = input("Please enter the package id. (must be unique and less than 100) \n")
         address = input("Please enter the destination address \n")
         city = input("Please enter the destination city. \n")
         state = input("Please enter the destination state. \n")
@@ -38,10 +40,12 @@ def user_interface():
         status = input("Please enter the delivery status. (at hub, delivered, en route \n")
 
         # verify id is an int
-        if verify_number_input(package_id):
+        if verify_package_id_input(package_id):
             new_package = [package_id, address, city, state, zip_code, deadline, weight, status]
             packages_hash.insert_package(new_package[0], new_package)
             print('Package #', package_id, ' inserted successfully!')
+        # return to main menu
+        user_interface()
 
     # search deliveries
     if options == "2":
@@ -54,7 +58,7 @@ def user_interface():
         if search_choice == "1":
             search_id = input("Enter package id... \n")
             # verify id is an int
-            if verify_number_input(search_id):
+            if verify_package_id_input(search_id):
                 search_results = [packages_hash.search_by_key(search_id)]
 
         # search by value in packages
@@ -71,13 +75,22 @@ def user_interface():
         else:
             print("No packages found.")
 
+        user_interface()
+
     # show all packages/deliveries
     if options == "3":
         for entry in packages_hash.map:
             if entry is not None:
                 print(entry)
-    # show distance graph (only for testing/debugging)
+
+        user_interface()
+
+    # show status of all packages at requested time
     if options == "4":
+        user_time_input = input("Please enter the time you wish to see package statuses for. (Ex: 10:00AM) \n")
+        truck.start_deliveries()
+    # show truck packages/routes (only for testing/debugging)
+    if options == "5":
         print('Truck1 Packages #: ', len(truck1.packages))
         print('Truck2 Packages #: ', len(truck2.packages))
         print('Truck3 Packages #: ', len(truck3.packages), "\n")
@@ -89,6 +102,8 @@ def user_interface():
         print('___Truck1 Route___', *truck1.truck_route, sep="\n")
         print('___Truck2 Route___', *truck2.truck_route, sep="\n")
         print('___Truck3 Route___', *truck3.truck_route, sep="\n")
+
+        user_interface()
 
 
 print("Welcome to the WGUPS DLD scheduling system! \n")
