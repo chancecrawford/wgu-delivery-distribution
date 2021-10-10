@@ -22,11 +22,11 @@ class PackageHashTable:
         for package in self.map:
             # pass over null entries
             if package is not None:
-                # python still thinks rows consist of None even though hash table would be populated at this point?
-                # and we're specifically saying not to search rows with None value?
-                if value_input in package[1]:
+                # check if any element in list contains substring
+                if any(value_input in string for string in package[1]):
                     # add packages with matched values to list to display to user
                     result_list.append(package[1])
+        # make sure
         if result_list:
             return result_list
         else:

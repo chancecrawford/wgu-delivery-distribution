@@ -5,18 +5,17 @@ import truck
 from truck import truck1, truck2, truck3
 from distances import distance_graph
 from package_hashtable import packages_hash
-from utils import verify_package_id_input
+from utils import verify_package_id_input, verify_time_input
 
 
 # ui for searching, creating package deliveries
 def user_interface():
-    # user options: search deliveries, enter new delivery
-    options = input("Enter number for desired action. \n \n"
+    # user options
+    options = input("\nEnter number for desired action. \n \n"
                     "[1] Create package to deliver \n"
                     "[2] Lookup package \n"
                     "[3] See all packages \n"
-                    "[4] See package status at specific time \n"
-                    "[5] Test truck package allocation and routes \n \n"
+                    "[4] See package status at specific time \n \n"
                     "[0] Exit program \n"
                     )
 
@@ -37,11 +36,13 @@ def user_interface():
         zip_code = input("Please enter the destination zip code. \n")
         deadline = input("Please enter the deadline the package must be delivered by. \n")
         weight = input("Please enter the package weight. (in kilos) \n")
-        status = input("Please enter the delivery status. (at hub, delivered, en route \n")
+        notes = input("Please enter any special instructions for the package. \n")
+        status = input("Please enter the delivery status. (AT HUB, DELIVERED, OUT FOR DELIVERY) \n")
+        start, end = "", ""
 
         # verify id is an int
         if verify_package_id_input(package_id):
-            new_package = [package_id, address, city, state, zip_code, deadline, weight, status]
+            new_package = [package_id, address, city, state, zip_code, deadline, weight, notes, status, start, end]
             packages_hash.insert_package(new_package[0], new_package)
             print('Package #', package_id, ' inserted successfully!')
         # return to main menu
@@ -66,31 +67,55 @@ def user_interface():
             search_value = input("Enter value to search for packages with. \n")
             search_results = packages_hash.search_by_value(search_value)
 
-        # filter out None entries if id entered would try to grab something out of bounds of list
-        filtered_search = [result for result in search_results if result is not None]
         # print results matching search if any
-        if filtered_search:
-            for result in filtered_search:
-                print('---RESULT---', result)
+        if search_results is not None:
+            print('---Packages Matching Search Criteria--- \n')
+            for result in search_results:
+                print(", ".join(result))
         else:
             print("No packages found.")
 
+        # return to main menu
         user_interface()
 
     # show all packages/deliveries
     if options == "3":
+        print("--- All Packages --- \n")
         for entry in packages_hash.map:
             if entry is not None:
-                print(entry)
+                print(", ".join(entry[1]))
 
+        # return to main menu
         user_interface()
 
     # show status of all packages at requested time
     if options == "4":
-        user_time_input = input("Please enter the time you wish to see package statuses for. (Ex: 10:00AM) \n")
-        truck.start_deliveries()
+        user_time_input = input(
+            "Please enter the time you wish to see package statuses for in military time. (Ex: 14:00) \n")
+        if verify_time_input(user_time_input):
+            truck.allocate_packages()
+            truck1.truck_route = truck.get_best_route(truck1.truck_route)
+            truck2.truck_route = truck.get_best_route(truck2.truck_route)
+            truck3.truck_route = truck.get_best_route(truck3.truck_route)
+            truck.start_deliveries()
+            package_info_list = truck.get_package_statuses(user_time_input)
+
+            print("--- Package statuses at ", user_time_input, " --- \n"
+                                                               "Package # \t Destination \t \t Status")
+            for row in package_info_list:
+                print("\t" + row[1][0] + "\t \t" + row[1][1] + "\t \t" + row[1][8])
+
+        # return to main menu
+        user_interface()
+
     # show truck packages/routes (only for testing/debugging)
     if options == "5":
+        truck.allocate_packages()
+        truck1.truck_route = truck.get_best_route(truck1.truck_route)
+        truck2.truck_route = truck.get_best_route(truck2.truck_route)
+        truck3.truck_route = truck.get_best_route(truck3.truck_route)
+        truck.start_deliveries()
+
         print('Truck1 Packages #: ', len(truck1.packages))
         print('Truck2 Packages #: ', len(truck2.packages))
         print('Truck3 Packages #: ', len(truck3.packages), "\n")
@@ -102,6 +127,10 @@ def user_interface():
         print('___Truck1 Route___', *truck1.truck_route, sep="\n")
         print('___Truck2 Route___', *truck2.truck_route, sep="\n")
         print('___Truck3 Route___', *truck3.truck_route, sep="\n")
+
+        print("Truck1 Start: ", truck1.route_start_time, " End: ", truck1.route_finish_time)
+        print("Truck2 Start: ", truck2.route_start_time, " End: ", truck2.route_finish_time)
+        print("Truck3 Start: ", truck3.route_start_time, " End: ", truck3.route_finish_time)
 
         user_interface()
 
