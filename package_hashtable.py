@@ -10,6 +10,7 @@ class PackageHashTable:
         self.size = 100
         self.map = [None] * self.size
 
+    # create hash from package id
     def get_hash(self, key):
         key_hash = key % self.size
         return key_hash
@@ -26,7 +27,7 @@ class PackageHashTable:
                 if any(value_input in string for string in package[1]):
                     # add packages with matched values to list to display to user
                     result_list.append(package[1])
-        # make sure
+        # make sure list isn't empty
         if result_list:
             return result_list
         else:

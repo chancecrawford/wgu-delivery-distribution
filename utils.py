@@ -21,7 +21,7 @@ def verify_time_input(user_time_input):
     return True
 
 
-# takes time in military time format and converts to datetime
+# takes time in military time format and converts to timedelta for easy comparison to start/end delivery times
 def convert_time_input_to_datetime(time_input):
     (hours, minutes) = time_input.split(":")
     return datetime.timedelta(hours=int(hours), minutes=int(minutes))

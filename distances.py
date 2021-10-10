@@ -28,9 +28,9 @@ class DistanceGraph:
     # O(ElogV) where E = # of edges and V = number of vertices
     def dijkstra(self, start_vertex, next_vertex):
         # create dictionary with address as key and infinite as initial distance from start vertex to that address
-        d = {v: float('inf') for v in self.vertices}
+        delivery_stop = {v: float('inf') for v in self.vertices}
         # set distance to itself as 0
-        d[start_vertex] = 0
+        delivery_stop[start_vertex] = 0
         # create pq and initialize with starting point
         priority_queue = PriorityQueue()
         priority_queue.put((0, start_vertex))
@@ -46,14 +46,18 @@ class DistanceGraph:
                 if self.edges[current_vertex][neighbor] != -1:
                     # set distance for comparison
                     distance = self.edges[current_vertex][neighbor]
+                    # checking address has been assessed already
                     if neighbor not in self.visited:
-                        old_cost = d[neighbor]
-                        new_cost = d[current_vertex] + distance
+                        # compare previous entry distance to current one
+                        old_cost = delivery_stop[neighbor]
+                        new_cost = delivery_stop[current_vertex] + distance
+                        # if current shorter than previous, replace stop
                         if new_cost < old_cost:
                             priority_queue.put((new_cost, neighbor))
-                            d[neighbor] = new_cost
+                            delivery_stop[neighbor] = new_cost
+        # return next stop and distance to it
         if next_vertex is not None:
-            return next_vertex, d[next_vertex]
+            return next_vertex, delivery_stop[next_vertex]
 
 
 # gets distance data from .csv
@@ -92,4 +96,5 @@ def create_distances_graph(file):
     return distances
 
 
+# create graph from file
 distance_graph = create_distances_graph("data/WGUPS Distance Table.csv")

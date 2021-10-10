@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Finished route optimization">
+    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Finished deliveries and almost done with package status check, added fixed to incorrect package address, added time input validation to utils, added start/end values to packages">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/WGUPS Package File.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/WGUPS Package File.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dijsktra_algorithm.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/distances.py" beforeDir="false" afterPath="$PROJECT_DIR$/distances.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package_hashtable.py" beforeDir="false" afterPath="$PROJECT_DIR$/package_hashtable.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/truck.py" beforeDir="false" afterPath="$PROJECT_DIR$/truck.py" afterDir="false" />
@@ -158,7 +159,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633788389233</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Finished deliveries and almost done with package status check, added fixed to incorrect package address, added time input validation to utils, added start/end values to packages">
+      <created>1633839976816</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1633839976816</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -190,6 +198,7 @@
     <MESSAGE value="Trying to get distance/packages to play nice together" />
     <MESSAGE value="Package allocation finished, dijkstra's algorithm working, started with route building for trucks" />
     <MESSAGE value="Finished route optimization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finished route optimization" />
+    <MESSAGE value="Finished deliveries and almost done with package status check, added fixed to incorrect package address, added time input validation to utils, added start/end values to packages" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finished deliveries and almost done with package status check, added fixed to incorrect package address, added time input validation to utils, added start/end values to packages" />
   </component>
 </project>

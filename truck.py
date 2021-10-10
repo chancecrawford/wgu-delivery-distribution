@@ -27,17 +27,28 @@ class Truck:
     def finish_route(self, timestamp):
         self.route_finish_time = timestamp
 
+    # O(1)
     def add_package(self, package):
         # add package to delivery list
         self.packages.append(package)
         # add address to to route (could we just add vertex?)
         self.truck_route.append(package[1])
 
+    # O(N)
     def remove_package(self, package):
         # remove specified package
         self.packages.remove(package)
         # remove address from route (could we also just have vertex here?)
         self.truck_route.remove(package[1])
+
+    # clear all truck info for querying delivery info back to back
+    # O(N) but can be improved to O(1) if utilizing libraries that better utilize garbage collection
+    def clear_truck_info(self):
+        self.packages.clear()
+        self.truck_route.clear()
+        self.route_start_time = None
+        self.route_current_time = None
+        self.route_finish_time = None
 
 
 # allocate packages based on priority and special instructions
@@ -56,13 +67,6 @@ def allocate_packages():
     # add packages in temp deliveries dict
     for package in packages_hash.map:
         if package is not None:
-            # update incorrect package information
-            if package[1][0] == "9":
-                package[1][1] = "410 S State St"
-                package[1][2] = "Salt Lake City"
-                package[1][3] = "UT"
-                package[1][4] = "84111"
-                package[1][7] = "Fixed incorrect address"
             # set status to "AT HUB"
             package[1][8] = "AT HUB"
             deliveries[package[1][1]].append(package[1])
@@ -83,6 +87,8 @@ def allocate_packages():
                 elif package[5] == "10:30" and "Must be delivered with" in package[7]:
                     truck1.add_package(package)
                 elif package[0] == "19":
+                    truck1.add_package(package)
+                elif package[7] == "Wrong address listed":
                     truck1.add_package(package)
                 elif package[7] == "Can only be on truck 2":
                     truck2.add_package(package)
@@ -112,6 +118,7 @@ def allocate_packages():
     truck2.truck_route.append(truck2.truck_route.pop(truck2.truck_route.index("5383 South 900 East #104")))
 
 
+# takes in delivery list of addresses and optimizes travel distance
 # O(N)
 def get_best_route(original_route):
     # create blank list for storing optimized paths in route
@@ -132,6 +139,8 @@ def get_best_route(original_route):
     return optimized_route
 
 
+# runs delivery simulation, saves times for truck/package delivery start/finish,
+# and updates statuses throughout simulation
 # O(N^2)
 def start_deliveries():
     # need to set start time for truck 1/2 at 8am
@@ -151,6 +160,7 @@ def start_deliveries():
             package[9] = str(truck2.route_start_time)
     # loop through truck routes and compute time taken to reach each hub
     # first truck route
+    print(truck1.truck_route)
     for truck1_delivery_stop in truck1.truck_route:
         # get decimal value of time to travel to stop
         time_to_deliver = float(truck1_delivery_stop[1]) / truck1.avg_speed
@@ -158,7 +168,6 @@ def start_deliveries():
         time_to_deliver = round(time_to_deliver * 60 * 60, 2)
         # add time elapsed to current time
         truck1.route_current_time += timedelta(seconds=time_to_deliver)
-        # print("ARRIVED AT ", truck1_delivery_stop[0], " AT ", truck1.route_current_time)
         # update delivery statuses for packages delivered at this stop
         for package in truck1.packages:
             if truck1_delivery_stop[0] == package[1]:
@@ -216,21 +225,36 @@ def start_deliveries():
     truck3.finish_route(truck3.route_current_time)
 
 
+# iterates through all packages in temp list, compares desired time input to start/end times
+# alters temp list to preserve original package info then returns temp list
+# O(N^2)
 def get_package_statuses(user_time_input):
     # parse input to convert to datetime
     converted_user_time_input_seconds = convert_time_input_to_datetime(user_time_input)
     # create temporary list for checking and altering packages to show statuses/start/end times at given time
     temp_package_list = packages_hash.map
-    print("Temp pkg list: ", *temp_package_list, sep="\n")
     # loop through packages to determine status/start/end is at that time
     for package in temp_package_list:
         if package is not None:
             # convert start/end times in package to datetime then timedelta to compare to time input
-            # TODO: Handle empty entries in start/end in cases of package deliveries not started/finished
-            start_datetime = datetime.strptime(package[1][9], "%Y-%m-%d %H:%M:%S.%f")
-            start_time = timedelta(hours=start_datetime.hour, minutes=start_datetime.minute)
-            end_datetime = datetime.strptime(package[1][10], "%Y-%m-%d %H:%M:%S.%f")
-            end_time = timedelta(hours=end_datetime.hour, minutes=end_datetime.minute)
+            # first check if any times exist for start/end
+            # if empty, place standard start times for packages
+            if package[1][9] != "":
+                start_datetime = datetime.strptime(package[1][9], "%Y-%m-%d %H:%M:%S.%f")
+                start_time = timedelta(hours=start_datetime.hour, minutes=start_datetime.minute)
+            else:
+                # handle later delivery for truck 3
+                if package[1] in truck3.packages:
+                    start_time = truck1.route_finish_time
+                else:
+                    start_time = timedelta(hours=8, minutes=0)
+            # if empty, place standard end times for packages
+            if package[1][10] != "":
+                end_datetime = datetime.strptime(package[1][10], "%Y-%m-%d %H:%M:%S.%f")
+                end_time = timedelta(hours=end_datetime.hour, minutes=end_datetime.minute)
+            else:
+                end_time = timedelta(hours=17, minutes=0)
+
             # if time is before package has left hub
             if converted_user_time_input_seconds < start_time:
                 package[1][8] = "AT HUB"
