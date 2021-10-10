@@ -160,7 +160,6 @@ def start_deliveries():
             package[9] = str(truck2.route_start_time)
     # loop through truck routes and compute time taken to reach each hub
     # first truck route
-    print(truck1.truck_route)
     for truck1_delivery_stop in truck1.truck_route:
         # get decimal value of time to travel to stop
         time_to_deliver = float(truck1_delivery_stop[1]) / truck1.avg_speed
@@ -270,6 +269,28 @@ def get_package_statuses(user_time_input):
 
     # return list with alterations to display current status/info and remove None entries
     return [row for row in temp_package_list if row is not None]
+
+
+# get and compute miles traveled for each truck and total of all trucks
+# O(N)
+def get_truck_mileage():
+    # create variables for storing mileage for each truck
+    truck1_mileage = 0
+    truck2_mileage = 0
+    truck3_mileage = 0
+    # loop through each route (after getting optimized routes and running delivery simulation) and compute mileage
+    for delivery_stop in truck1.truck_route:
+        truck1_mileage += delivery_stop[1]
+    for delivery_stop in truck2.truck_route:
+        truck2_mileage += delivery_stop[1]
+    for delivery_stop in truck3.truck_route:
+        truck3_mileage += delivery_stop[1]
+    # display miles traveled for each truck
+    print("Truck 1 Miles Traveled: ", str(round(truck1_mileage, 2)))
+    print("Truck 2 Miles Traveled: ", str(round(truck2_mileage, 2)))
+    print("Truck 3 Miles Traveled: ", str(round(truck3_mileage, 2)))
+    # display total miles traveled by all trucks
+    print("Total Miles Traveled By All Trucks: ", str(round(truck1_mileage + truck2_mileage + truck3_mileage, 2)))
 
 
 # initialize each truck object

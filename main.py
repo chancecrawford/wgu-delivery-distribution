@@ -14,7 +14,8 @@ def user_interface():
                     "[1] Create package to deliver \n"
                     "[2] Lookup package \n"
                     "[3] See all packages \n"
-                    "[4] See package status at specific time \n \n"
+                    "[4] See package status at specific time \n"
+                    "[5] Show Truck Travel Mileage \n \n"
                     "[0] Exit program \n"
                     )
 
@@ -139,34 +140,22 @@ def user_interface():
             # return to main menu
             user_interface()
 
-    # show truck packages/routes (only for testing/debugging)
     if options == "5":
+        # run functions to allocate packages to all 3 trucks and build delivery list
         truck.allocate_packages()
+        # run addresses from delivery list through optimization algorithm (dijkstra's)
         truck1.truck_route = truck.get_best_route(truck1.truck_route)
         truck2.truck_route = truck.get_best_route(truck2.truck_route)
         truck3.truck_route = truck.get_best_route(truck3.truck_route)
+        # run delivery simulation
         truck.start_deliveries()
-
-        print('Truck1 Packages #: ', len(truck1.packages))
-        print('Truck2 Packages #: ', len(truck2.packages))
-        print('Truck3 Packages #: ', len(truck3.packages), "\n")
-
-        print('TRUCK 1:', *truck1.packages, sep="\n")
-        print('TRUCK 2:', *truck2.packages, sep="\n")
-        print('TRUCK 3:', *truck3.packages, sep="\n")
-
-        print('___Truck1 Route___', *truck1.truck_route, sep="\n")
-        print('___Truck2 Route___', *truck2.truck_route, sep="\n")
-        print('___Truck3 Route___', *truck3.truck_route, sep="\n")
-
-        print("Truck1 Start: ", truck1.route_start_time, " End: ", truck1.route_finish_time)
-        print("Truck2 Start: ", truck2.route_start_time, " End: ", truck2.route_finish_time)
-        print("Truck3 Start: ", truck3.route_start_time, " End: ", truck3.route_finish_time)
-
+        # get and display truck mileage
+        truck.get_truck_mileage()
+        # clear all delivery info for rerunning future queries
         truck1.clear_truck_info()
         truck2.clear_truck_info()
         truck3.clear_truck_info()
-
+        # return to main menu
         user_interface()
 
 
