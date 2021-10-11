@@ -1,16 +1,17 @@
 import csv
 
 
-# pull and convert package data from .csv into hash table for easier/faster reading and writing of data
-class PackageHashTable:
+# pull and convert package data from .csv into hash map for easier/faster reading and writing of data
+class PackageHashMap:
 
     # create default hash map with default 40 empty entries
-    # O(1)
+    # O(N) since python still iterates over each element in creation
     def __init__(self):
         self.size = 100
         self.map = [None] * self.size
 
     # create hash from package id
+    # O(1)
     def get_hash(self, key):
         key_hash = key % self.size
         return key_hash
@@ -43,7 +44,7 @@ class PackageHashTable:
             return self.map[key_hash][1]
         return None
 
-    # insert package into hash table
+    # insert package into hash map
     # O(1)
     def insert_package(self, key, package):
         hash_key = self.get_hash(int(package[0]))
@@ -60,10 +61,11 @@ class PackageHashTable:
             self.map[hash_key].append(values)
 
 
-# gets package data from .csv and inserts into hash table
+# https://docs.python.org/3/library/csv.html
+# gets package data from .csv and inserts into hash map
 # O(N)
 def retrieve_packages(package_file):
-    package_hash_table = PackageHashTable()
+    package_hash_map = PackageHashMap()
     # use csv reader to get data
     with open(package_file) as file:
         reader = csv.reader(file)
@@ -71,9 +73,9 @@ def retrieve_packages(package_file):
         next(reader, None)
         # insert each row into hashmap
         for row in reader:
-            package_hash_table.insert_package(row[0], row)
-    return package_hash_table
+            package_hash_map.insert_package(row[0], row)
+    return package_hash_map
 
 
-# Initialize hash table with package .csv
+# Initialize hash map with package .csv
 packages_hash = retrieve_packages("data/WGUPS Package File.csv")

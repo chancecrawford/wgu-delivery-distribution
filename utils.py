@@ -4,11 +4,12 @@ import time
 
 # for varying validations and utility functions
 # validates user input is an int for searching package IDs
+# O(N)
 def verify_package_id_input(user_input):
     if user_input.strip().isdigit() and int(user_input) < 100:
         return True
     else:
-        print("Please enter a number for package ID. \n")
+        print("Please enter a number for package ID that is less than 100. \n")
 
 
 # validates user input is proper time format

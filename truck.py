@@ -1,5 +1,5 @@
 from distances import distance_graph
-from package_hashtable import packages_hash
+from package_hashmap import packages_hash
 from utils import convert_time_input_to_datetime
 
 from collections import defaultdict
@@ -130,11 +130,12 @@ def get_best_route(original_route):
     for address in original_route:
         # index check if stop is last stop or not
         if index < len(original_route):
-            optimized_route.append(distance_graph.dijkstra(address, original_route[original_route.index(address) + 1]))
+            optimized_route.append(
+                distance_graph.get_shortest_path(address, original_route[original_route.index(address) + 1]))
             index += 1
         # if it is last stop, add home hub and shortest route to it
         elif index == len(original_route):
-            optimized_route.append(distance_graph.dijkstra(address, original_route[0]))
+            optimized_route.append(distance_graph.get_shortest_path(address, original_route[0]))
     # return optimized route for given truck
     return optimized_route
 

@@ -3,7 +3,7 @@ import time
 
 import truck
 from truck import truck1, truck2, truck3
-from package_hashtable import packages_hash
+from package_hashmap import packages_hash
 from utils import verify_package_id_input, verify_time_input
 
 
@@ -28,7 +28,7 @@ def user_interface():
         sys.exit()
     # create package delivery
     if options == "1":
-        # get all inputs needed for inserting new package into hashtable/csv
+        # get all inputs needed for inserting new package into hashmap/csv
         package_id = input("Please enter the package id. (must be unique and less than 100) \n")
         address = input("Please enter the destination address \n")
         city = input("Please enter the destination city. \n")
@@ -80,6 +80,7 @@ def user_interface():
 
     # show all packages/deliveries
     # will change to display all package info at latest time search from option 4
+    # O(N)
     if options == "3":
         print("--- All Packages --- \n")
         for entry in packages_hash.map:
@@ -90,13 +91,14 @@ def user_interface():
         user_interface()
 
     # show status of all packages at requested time
+    # O(N) -- not including functions called from other files
     if options == "4":
         # bring up issue with wrong address at time that WGUPS finds out
         correct_incorrect_address_input = input("It is 10:20AM and Package #9 needs its address fixed. \n"
                                                 "Would you like to update it with the correct address? \n \n"
                                                 "[0] Decline and return to main menu \n"
                                                 "[1] Update address \n \n")
-        # return to main menu if user delcines
+        # return to main menu if user declines
         if correct_incorrect_address_input == "0":
             user_interface()
         # update package address
@@ -111,27 +113,28 @@ def user_interface():
                         package[1][7] = "Fixed incorrect address"
                         print("Package #9 address updated! \n")
                         time.sleep(1)
-            # get user desired time for package/delivery info
-            user_time_input = input(
-                "Please enter the time you wish to see package statuses for in military time. (Ex: 14:00) \n")
-            # verify input is valid time format
-            if verify_time_input(user_time_input):
-                # run functions to allocate packages to all 3 trucks and build delivery list
-                truck.allocate_packages()
-                # run addresses from delivery list through optimization algorithm (dijkstra's)
-                truck1.truck_route = truck.get_best_route(truck1.truck_route)
-                truck2.truck_route = truck.get_best_route(truck2.truck_route)
-                truck3.truck_route = truck.get_best_route(truck3.truck_route)
-                # run delivery simulation
-                truck.start_deliveries()
-                # get package info at given time
-                package_info_list = truck.get_package_statuses(user_time_input)
-                # headers for easier data readability
-                print("--- Package statuses at ", user_time_input, " --- \n"
-                                                                   "Package # \t Destination \t \t Status")
-                # show needed package info for every package
-                for row in package_info_list:
-                    print("\t" + row[1][0] + "\t \t" + row[1][1] + "\t \t" + row[1][8])
+
+        # get user desired time for package/delivery info
+        user_time_input = input(
+            "Please enter the time you wish to see package statuses for in military time. (Ex: 14:00) \n")
+        # verify input is valid time format
+        if verify_time_input(user_time_input):
+            # run functions to allocate packages to all 3 trucks and build delivery list
+            truck.allocate_packages()
+            # run addresses from delivery list through optimization algorithm (dijkstra's)
+            truck1.truck_route = truck.get_best_route(truck1.truck_route)
+            truck2.truck_route = truck.get_best_route(truck2.truck_route)
+            truck3.truck_route = truck.get_best_route(truck3.truck_route)
+            # run delivery simulation
+            truck.start_deliveries()
+            # get package info at given time
+            package_info_list = truck.get_package_statuses(user_time_input)
+            # headers for easier data readability
+            print("--- Package statuses at ", user_time_input, " --- \n"
+                                                               "Package # \t Destination \t \t Status")
+            # show needed package info for every package
+            for row in package_info_list:
+                print("\t" + row[1][0] + "\t \t" + row[1][1] + "\t \t" + row[1][8])
 
             # clear all delivery info for rerunning future queries
             truck1.clear_truck_info()

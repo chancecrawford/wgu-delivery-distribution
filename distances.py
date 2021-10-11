@@ -13,6 +13,7 @@ class DistanceGraph:
         self.visited = []
 
     # need both vertices that form edge and distance between them
+    # O(1) since we check at key before insertion
     def add_edge(self, first_vertex, second_vertex, distance_between):
         # initialize entries in dict before adding elements there
         if first_vertex not in self.edges:
@@ -26,7 +27,7 @@ class DistanceGraph:
     # takes two points, finds shortest path to all points from current one,
     # and returns shortest path distance for next vertex
     # O(ElogV) where E = # of edges and V = number of vertices
-    def dijkstra(self, start_vertex, next_vertex):
+    def get_shortest_path(self, start_vertex, next_vertex):
         # create dictionary with address as key and infinite as initial distance from start vertex to that address
         delivery_stop = {v: float('inf') for v in self.vertices}
         # set distance to itself as 0
@@ -49,19 +50,19 @@ class DistanceGraph:
                     # checking address has been assessed already
                     if neighbor not in self.visited:
                         # compare previous entry distance to current one
-                        old_cost = delivery_stop[neighbor]
-                        new_cost = delivery_stop[current_vertex] + distance
+                        old_distance = delivery_stop[neighbor]
+                        new_distance = delivery_stop[current_vertex] + distance
                         # if current shorter than previous, replace stop
-                        if new_cost < old_cost:
-                            priority_queue.put((new_cost, neighbor))
-                            delivery_stop[neighbor] = new_cost
+                        if new_distance < old_distance:
+                            priority_queue.put((new_distance, neighbor))
+                            delivery_stop[neighbor] = new_distance
         # return next stop and distance to it
         if next_vertex is not None:
             return next_vertex, delivery_stop[next_vertex]
 
 
 # gets distance data from .csv
-# O(N) for getting csv data
+# O(1) for getting csv data and for appending data
 def retrieve_distance_data(distances_file):
     # initialize array for getting csv data
     file_data = []

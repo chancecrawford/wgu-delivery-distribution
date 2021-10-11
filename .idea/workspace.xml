@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Correct issue with blank start/end times, deal with package 9 wrong address, add clearing of delivery info with status checks to keep lists clean, added needed comments and space-time complexity explanations">
+    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Added truck mileage display">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/distances.py" beforeDir="false" afterPath="$PROJECT_DIR$/distances.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package_hashtable.py" beforeDir="false" afterPath="$PROJECT_DIR$/package_hashmap.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/truck.py" beforeDir="false" afterPath="$PROJECT_DIR$/truck.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -169,7 +172,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633890364678</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Added truck mileage display">
+      <created>1633892006031</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1633892006031</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -203,6 +213,7 @@
     <MESSAGE value="Finished route optimization" />
     <MESSAGE value="Finished deliveries and almost done with package status check, added fixed to incorrect package address, added time input validation to utils, added start/end values to packages" />
     <MESSAGE value="Correct issue with blank start/end times, deal with package 9 wrong address, add clearing of delivery info with status checks to keep lists clean, added needed comments and space-time complexity explanations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Correct issue with blank start/end times, deal with package 9 wrong address, add clearing of delivery info with status checks to keep lists clean, added needed comments and space-time complexity explanations" />
+    <MESSAGE value="Added truck mileage display" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added truck mileage display" />
   </component>
 </project>
