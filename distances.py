@@ -1,6 +1,6 @@
-import csv
+# Chance Crawford --- Student ID:
 
-from queue import PriorityQueue
+import csv
 
 
 # pull distance data from .csv and create graph with vertices based on locations
@@ -24,41 +24,34 @@ class DistanceGraph:
         self.edges[first_vertex][second_vertex] = distance_between
         self.edges[second_vertex][first_vertex] = distance_between
 
-    # takes two points, finds shortest path to all points from current one,
-    # and returns shortest path distance for next vertex
-    # O(ElogV) where E = # of edges and V = number of vertices
-    def get_shortest_path(self, start_vertex, next_vertex):
-        # create dictionary with address as key and infinite as initial distance from start vertex to that address
-        delivery_stop = {v: float('inf') for v in self.vertices}
-        # set distance to itself as 0
-        delivery_stop[start_vertex] = 0
-        # create pq and initialize with starting point
-        priority_queue = PriorityQueue()
-        priority_queue.put((0, start_vertex))
+    # takes in route to optimize, loops through addresses in route to find best route
+    # from current address to next address in route
+    # O(N^2)
+    def get_shortest_path(self, original_route):
+        # set home delivery hub as first address
+        optimized_route = ["4001 South 700 East"]
 
-        while not priority_queue.empty():
-            (dist, current_vertex) = priority_queue.get()
-            # need to clear visited nodes before adding current one
-            self.visited.clear()
-            self.visited.append(current_vertex)
-            # loop through addresses
-            for neighbor in self.vertices:
-                # make sure distance between current address and neighbor exist
-                if self.edges[current_vertex][neighbor] != -1:
-                    # set distance for comparison
-                    distance = self.edges[current_vertex][neighbor]
-                    # checking address has been assessed already
-                    if neighbor not in self.visited:
-                        # compare previous entry distance to current one
-                        old_distance = delivery_stop[neighbor]
-                        new_distance = delivery_stop[current_vertex] + distance
-                        # if current shorter than previous, replace stop
-                        if new_distance < old_distance:
-                            priority_queue.put((new_distance, neighbor))
-                            delivery_stop[neighbor] = new_distance
-        # return next stop and distance to it
-        if next_vertex is not None:
-            return next_vertex, delivery_stop[next_vertex]
+        # loop through addresses in route to determine shortest route
+        # removes address after getting best route to next address and breaks out of loop when none left
+        while len(original_route) != 0:
+            # set starting point with distance to itself
+            best_route = [0, "4001 South 700 East"]
+            for address in original_route:
+                # get distances between locations
+                distance = self.edges[optimized_route[-1]][address]
+                # handle multiple packages at same address
+                if best_route[0] == 0:
+                    best_route = [distance, address]
+                # if shorter distance found, set as new route
+                if distance < best_route[0] and distance != 0:
+                    best_route = [distance, address]
+            # add shortest route to optimized route
+            if best_route[1] not in optimized_route:
+                optimized_route.append(best_route[1])
+            # remove route to avoid any accidental loops over same address
+            original_route.remove(best_route[1])
+
+        return optimized_route
 
 
 # gets distance data from .csv

@@ -1,3 +1,5 @@
+# Chance Crawford --- Student ID:
+
 import sys
 import time
 
@@ -9,6 +11,34 @@ from utils import verify_package_id_input, verify_time_input
 
 # ui for searching, creating package deliveries, displaying delivery info
 def user_interface():
+    # bring up issue with wrong address at time that WGUPS finds out
+    if not check_incorrect_package_updated():
+        print("It is 10:20AM and Package #9 needs its address fixed... \n \n")
+        time.sleep(1)
+        correct_incorrect_address_input = input("Would you like to update it with the correct address? \n \n"
+                                                "[0] Decline and return to main menu \n"
+                                                "[1] Update address \n \n")
+        # return to main menu if user declines
+        if correct_incorrect_address_input == "0":
+            print("Thank you for using the WGUPS DLD scheduling system! \n \n"
+                  "Terminating application...")
+            time.sleep(2)
+            sys.exit()
+        elif correct_incorrect_address_input == "1":
+            # update package address
+            for package in packages_hash.map:
+                if package is not None:
+                    if package[1][0] == "9":
+                        package[1][1] = "410 S State St"
+                        package[1][2] = "Salt Lake City"
+                        package[1][3] = "UT"
+                        package[1][4] = "84111"
+                        package[1][7] = ""
+                        print("Package #9 address updated! \n")
+                        time.sleep(1)
+        # return to main menu for check to make sure package #9 updated
+        user_interface()
+
     # user options
     options = input("\nEnter number for desired action. \n \n"
                     "[1] Create package to deliver \n"
@@ -42,7 +72,17 @@ def user_interface():
 
         # verify id is an int
         if verify_package_id_input(package_id):
-            new_package = [package_id, address, city, state, zip_code, deadline, weight, notes, status, start, end]
+            new_package = [package_id,
+                           address,
+                           city,
+                           state,
+                           zip_code,
+                           deadline,
+                           weight,
+                           notes,
+                           status,
+                           start,
+                           end]
             packages_hash.insert_package(new_package[0], new_package)
             print('Package #', package_id, ' inserted successfully!')
         # return to main menu
@@ -82,38 +122,28 @@ def user_interface():
     # will change to display all package info at latest time search from option 4
     # O(N)
     if options == "3":
+        # run functions to allocate packages to all 3 trucks and build delivery list
+        truck.allocate_packages()
+        # run addresses from delivery list through optimization algorithm (dijkstra's)
+        truck.get_best_route()
+        # run delivery simulation
+        truck.start_deliveries()
+
         print("--- All Packages --- \n")
         for entry in packages_hash.map:
             if entry is not None:
                 print(", ".join(entry[1]))
 
+        # clear all delivery info for rerunning future queries
+        truck1.clear_truck_info()
+        truck2.clear_truck_info()
+        truck3.clear_truck_info()
         # return to main menu
         user_interface()
 
     # show status of all packages at requested time
     # O(N) -- not including functions called from other files
     if options == "4":
-        # bring up issue with wrong address at time that WGUPS finds out
-        correct_incorrect_address_input = input("It is 10:20AM and Package #9 needs its address fixed. \n"
-                                                "Would you like to update it with the correct address? \n \n"
-                                                "[0] Decline and return to main menu \n"
-                                                "[1] Update address \n \n")
-        # return to main menu if user declines
-        if correct_incorrect_address_input == "0":
-            user_interface()
-        # update package address
-        elif correct_incorrect_address_input == "1":
-            for package in packages_hash.map:
-                if package is not None:
-                    if package[1][0] == "9":
-                        package[1][1] = "410 S State St"
-                        package[1][2] = "Salt Lake City"
-                        package[1][3] = "UT"
-                        package[1][4] = "84111"
-                        package[1][7] = "Fixed incorrect address"
-                        print("Package #9 address updated! \n")
-                        time.sleep(1)
-
         # get user desired time for package/delivery info
         user_time_input = input(
             "Please enter the time you wish to see package statuses for in military time. (Ex: 14:00) \n")
@@ -122,9 +152,7 @@ def user_interface():
             # run functions to allocate packages to all 3 trucks and build delivery list
             truck.allocate_packages()
             # run addresses from delivery list through optimization algorithm (dijkstra's)
-            truck1.truck_route = truck.get_best_route(truck1.truck_route)
-            truck2.truck_route = truck.get_best_route(truck2.truck_route)
-            truck3.truck_route = truck.get_best_route(truck3.truck_route)
+            truck.get_best_route()
             # run delivery simulation
             truck.start_deliveries()
             # get package info at given time
@@ -146,10 +174,8 @@ def user_interface():
     if options == "5":
         # run functions to allocate packages to all 3 trucks and build delivery list
         truck.allocate_packages()
-        # run addresses from delivery list through optimization algorithm (dijkstra's)
-        truck1.truck_route = truck.get_best_route(truck1.truck_route)
-        truck2.truck_route = truck.get_best_route(truck2.truck_route)
-        truck3.truck_route = truck.get_best_route(truck3.truck_route)
+        # get optimized routes for truck deliveries
+        truck.get_best_route()
         # run delivery simulation
         truck.start_deliveries()
         # get and display truck mileage
@@ -160,6 +186,16 @@ def user_interface():
         truck3.clear_truck_info()
         # return to main menu
         user_interface()
+
+
+# used to check if package with incorrect address has been updated
+# O(1) -- since searching with hash key
+def check_incorrect_package_updated():
+    package_nine = packages_hash.search_by_key("9")
+    if package_nine[1] == "410 S State St":
+        return True
+    else:
+        return False
 
 
 print("Welcome to the WGUPS DLD scheduling system! \n")
