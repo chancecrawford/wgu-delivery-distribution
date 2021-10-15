@@ -55,7 +55,7 @@ class DistanceGraph:
 
 
 # gets distance data from .csv
-# O(1) for getting csv data and for appending data
+# O(1) for getting csv data and O(N) for appending data
 def retrieve_distance_data(distances_file):
     # initialize array for getting csv data
     file_data = []

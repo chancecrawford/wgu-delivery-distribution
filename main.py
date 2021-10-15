@@ -124,7 +124,7 @@ def user_interface():
     if options == "3":
         # run functions to allocate packages to all 3 trucks and build delivery list
         truck.allocate_packages()
-        # run addresses from delivery list through optimization algorithm (dijkstra's)
+        # run addresses from delivery list through optimization algorithm
         truck.get_best_route()
         # run delivery simulation
         truck.start_deliveries()
@@ -151,7 +151,7 @@ def user_interface():
         if verify_time_input(user_time_input):
             # run functions to allocate packages to all 3 trucks and build delivery list
             truck.allocate_packages()
-            # run addresses from delivery list through optimization algorithm (dijkstra's)
+            # run addresses from delivery list through optimization algorithm
             truck.get_best_route()
             # run delivery simulation
             truck.start_deliveries()

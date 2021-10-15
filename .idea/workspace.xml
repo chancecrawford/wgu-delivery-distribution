@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Last minute touch-ups and cleanup">
+    <list default="true" id="004e7d90-f439-4d6d-a24c-284764571771" name="Changes" comment="Replace dijkstra's algorithm with simpler greedy path algorithm, update pkg allocation, route optimization, and mileage determination, added pkg 9 update check">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/distances.py" beforeDir="false" afterPath="$PROJECT_DIR$/distances.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
@@ -190,7 +190,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633915566157</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="Replace dijkstra's algorithm with simpler greedy path algorithm, update pkg allocation, route optimization, and mileage determination, added pkg 9 update check">
+      <created>1634182816960</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1634182816960</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -226,6 +233,7 @@
     <MESSAGE value="Correct issue with blank start/end times, deal with package 9 wrong address, add clearing of delivery info with status checks to keep lists clean, added needed comments and space-time complexity explanations" />
     <MESSAGE value="Added truck mileage display" />
     <MESSAGE value="Last minute touch-ups and cleanup" />
-    <option name="LAST_COMMIT_MESSAGE" value="Last minute touch-ups and cleanup" />
+    <MESSAGE value="Replace dijkstra's algorithm with simpler greedy path algorithm, update pkg allocation, route optimization, and mileage determination, added pkg 9 update check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Replace dijkstra's algorithm with simpler greedy path algorithm, update pkg allocation, route optimization, and mileage determination, added pkg 9 update check" />
   </component>
 </project>
